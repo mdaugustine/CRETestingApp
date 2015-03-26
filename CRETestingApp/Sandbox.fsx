@@ -18,6 +18,7 @@ reporter <- new LiveHtmlReporter() :> IReporter
 configuration.chromeDir <- "c:\Users\Mdaugustine"
 start chrome
 pin FullScreen
+url "https://www.credashboards.com/dev/html5/_new_components/dashboard.php?id=4063"
 
 //Global functions
 let u = "https://www.credashboards.com/"
@@ -44,4 +45,28 @@ let (-->) elementA elementB =
 let drag elementA elementB = elementA --> elementB
 
 //Tests
-url "https://www.credashboards.com/dev/html5/_new_components/dashboard.php?id=4063"
+"Login" &&& fun _ ->
+    "#username" << "mdaugustine@fischercompany.com"
+    "#password" << "password"
+    click "Login"
+context "Navigation Test"
+before (fun _ ->
+    on u
+)
+lastly (fun _ ->
+    reload()
+)
+"Go to second Module" &&& fun _ ->
+    click (nth 1 ".module_grouping")
+"Go left" &&& fun _ ->
+    click ".fa-angle-left"
+"Go to first module" &&& fun _ ->
+    click (first ".module_grouping")
+"Go to second tab" &&& fun _ ->
+    click "#active_tab_name"
+    on u
+    click (nth 1 ".nav_tab")
+"go to first tab" &&& fun _ ->
+    click "#active_tab_name"
+    on u
+    click (nth 0 ".nav_tab")
