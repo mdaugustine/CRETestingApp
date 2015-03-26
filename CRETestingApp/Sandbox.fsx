@@ -18,3 +18,30 @@ reporter <- new LiveHtmlReporter() :> IReporter
 configuration.chromeDir <- "c:\Users\Mdaugustine"
 start chrome
 pin FullScreen
+
+//Global functions
+let u = "https://www.credashboards.com/"
+let rand = System.Random()
+let dateStam() =
+    let date() = System.DateTime.Now.ToShortDateString().Split('/')
+    let time() = System.DateTime.Now.ToLongTimeString().TrimEnd(' ')
+    date().[0] + "/" + date().[1] + " " + time()
+let private wait timeout f =
+    let wait = new WebDriverWait(browser, TimeSpan.FromSeconds(timeout))
+    wait.Until(fun _ -> (
+                            try
+                                (f ()) = true
+                            with
+                            | :? CanopyException as ce -> raise(ce)
+                            | _ -> false
+                        )
+              ) |> ignore
+    ()
+let (-->) elementA elementB =
+    wait elementTimeout (fun _ ->
+        (new Actions(browser)).DragAndDrop(elementA, elementB).Perform()
+        true)
+let drag elementA elementB = elementA --> elementB
+
+//Tests
+url "https://www.credashboards.com/dev/html5/_new_components/dashboard.php?id=4063"
