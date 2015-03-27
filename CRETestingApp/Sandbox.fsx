@@ -23,10 +23,10 @@ url "https://www.credashboards.com/dev/html5/_new_components/dashboard.php?id=40
 //Global functions
 let u = "https://www.credashboards.com/"
 let rand = System.Random()
-let dateStam() =
+let timeStamp() =
     let date() = System.DateTime.Now.ToShortDateString().Split('/')
-    let time() = System.DateTime.Now.ToLongTimeString().TrimEnd(' ')
-    date().[0] + "/" + date().[1] + " " + time()
+    let time() = System.DateTime.Now.ToLongTimeString().Split(' ')
+    date().[0] + "/" + date().[1] + " " + time().[0]
 let private wait timeout f =
     let wait = new WebDriverWait(browser, TimeSpan.FromSeconds(timeout))
     wait.Until(fun _ -> (
@@ -105,3 +105,34 @@ before (fun _ ->
     clickAll ".btn-menu"
     on u
     click ".btn-danger"
+
+context "Traditional Dashboards"
+before (fun _ ->
+    on u
+)
+once (fun _ ->
+    click "#btn-view-multi"
+)
+"Create new view" &&& fun _ ->
+    click "#config_btn"
+    on u
+    click ".btn-success"
+    on u
+    "#multi_title" << "Test " + timeStamp()
+    click "#mv-option-2"
+    let layouts = (element ".new-mv" |> elementsWithin "button")
+    click (layouts.Item(rand.Next(0,14)))
+    click ".btn-primary"
+"Create Sections" &&& fun _ ->
+    let sections() = (element "#multi_container" |> elementsWithin ".multi-renderer")
+    describe (Convert.ToString(sections().Length))
+    for i in 0 .. (sections().Length - 1) do
+        on u
+        describe (Convert.ToString(i))
+        click (sections().Item(i) |> elementWithin ".glyphicon-cog")
+        click (sections().Item(i) |> elementWithin ".form-control")
+        on u
+        let dropdown = (sections().Item(i) |> elementWithin ".form-control" |> elementsWithin "option")
+        for j in 1 .. (rand.Next(1, dropdown.Length)) do
+            press down
+        press enter
