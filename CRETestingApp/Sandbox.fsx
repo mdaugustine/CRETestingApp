@@ -49,6 +49,7 @@ let drag elementA elementB = elementA --> elementB
     "#username" << "mdaugustine@fischercompany.com"
     "#password" << "password"
     click "Login"
+
 context "Navigation Test"
 before (fun _ ->
     on u
@@ -70,3 +71,37 @@ lastly (fun _ ->
     click "#active_tab_name"
     on u
     click (nth 0 ".nav_tab")
+
+context "Config Views"
+before (fun _ ->
+    on u
+)
+"Open view more" &&& fun _ ->
+    click "#btn-view-more"
+"Hide All Views" &&& fun _ ->
+    click "#btn-view-options"
+    on u
+    let unCheckAll selector =
+        elements selector
+        |> List.iter (fun element -> uncheck element)
+    unCheckAll ".menu_button_options_checkboxes"
+    click ".btn-primary"
+"Open view more" &&& fun _ ->
+    click "#btn-view-more"
+"Show all views" &&& fun _ ->
+    click "#btn-view-options"
+    on u
+    let checkAll selector =
+        elements selector
+        |> List.iter (fun element -> check element)
+    checkAll ".menu_button_options_checkboxes"
+    click ".btn-primary"
+"Iterate through views" &&& fun _ ->
+    let clickAll selector = 
+        elements selector
+        |> List.iter (fun element ->
+        on u
+        click element)
+    clickAll ".btn-menu"
+    on u
+    click ".btn-danger"
