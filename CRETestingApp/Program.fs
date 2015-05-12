@@ -42,7 +42,7 @@ let drag elementA elementB = elementA --> elementB
 //Tests
 "Login" &&&& fun _ ->
     "#username" << "mdaugustine@fischercompany.com"
-    "#password" << "password"
+    "#password" << ""
     click "Login"
 
 context "Navigation Test"
